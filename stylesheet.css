@@ -1,0 +1,7 @@
+/* ForceQuit GNOME Shell Extension Styles */
+.forcequit-close-armed {
+    background-color: #e60000 !important;
+    color: #ffffff !important;
+    border-color: #ff3333 !important;
+    box-shadow: 0 0 12px rgba(255, 0, 0, 0.9) !important;
+}

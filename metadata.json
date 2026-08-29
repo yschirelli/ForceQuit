@@ -1,0 +1,17 @@
+{
+  "uuid": "forcequit@schirelli.github.io",
+  "name": "ForceQuit",
+  "description": "Forcefully kill hanging or frozen processes by holding Shift while clicking the window close (X) button.",
+  "icon": "icon.png",
+  "shell-version": [
+    "45",
+    "46",
+    "47",
+    "48",
+    "49",
+    "50"
+  ],
+  "url": "https://github.com/schirelli/forcequit",
+  "settings-schema": "org.gnome.shell.extensions.forcequit",
+  "version": 1
+}
