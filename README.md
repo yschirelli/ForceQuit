@@ -74,9 +74,18 @@ chmod +x install.sh
 ```
 
 The script automatically:
-1. Compiles the GSettings schema (`schemas/gschemas.compiled`).
-2. Copies all extension files to `~/.local/share/gnome-shell/extensions/forcequit@schirelli.github.io/`.
-3. Enables the extension via `gnome-extensions enable forcequit@schirelli.github.io`.
+1. Dynamically detects GNOME Shell, session type (Wayland / X11), and dependencies.
+2. Compiles GSettings schemas (`schemas/gschemas.compiled`).
+3. Cleanly installs extension files to the user's GNOME extensions directory.
+4. Enables the extension via `gnome-extensions enable`.
+
+### Installer Options:
+```bash
+./install.sh --help         # Show usage and available options
+./install.sh --dry-run      # Preview installation without modifying files
+./install.sh --uninstall    # Cleanly remove the extension
+sudo ./install.sh --system  # Install system-wide for all users
+```
 
 ---
 
