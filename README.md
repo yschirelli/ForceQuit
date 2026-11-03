@@ -1,6 +1,6 @@
 # ForceQuit GNOME Shell Extension
 
-[![GNOME Shell](https://img.shields.io/badge/GNOME%20Shell-45%20%7C%2046%20%7C%2047%20%7C%2048%20%7C%2049%20%7C%2050%2B-blue.svg)](https://gjs.guide/extensions/)
+[![GNOME Shell](https://img.shields.io/badge/GNOME%20Shell-45%20%7C%2046%20%7C%2047%20%7C%2048%20%7C%2049%20%7C%2050%20%7C%2051%2B-blue.svg)](https://gjs.guide/extensions/)
 [![License: GPL-3.0](https://img.shields.io/badge/License-GPLv3-green.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![LibAdwaita](https://img.shields.io/badge/UI-LibAdwaita%20%2F%20GTK4-purple.svg)](https://gnome.pages.gitlab.gnome.org/libadwaita/)
 
@@ -33,7 +33,7 @@ When an application freezes or enters an infinite loop, standard window managers
 - 🪟 **Dual Context Support**: Works directly on window titlebar close buttons and within GNOME Shell Overview window preview cards (`WindowPreview`).
 - 🔔 **Desktop Notifications**: Displays a toast notification detailing the terminated application name and its PID.
 - ⚙️ **LibAdwaita Preferences GUI**: Native GTK4/Adw configuration panel with interactive key remapping and RGBA color pickers.
-- 🐧 **Universal Linux Compatibility**: Supports GNOME Shell 45 through 50+ on Wayland and X11 across Fedora, Ubuntu, Arch Linux, Debian, openSUSE, and more.
+- 🐧 **Universal Linux Compatibility**: Supports GNOME Shell 45 through 51+ on Wayland and X11 across Fedora, Ubuntu, Arch Linux, Debian, openSUSE, and more.
 
 ---
 
@@ -55,7 +55,7 @@ flowchart TD
 
 ## System Requirements
 
-- **Desktop Environment**: GNOME Shell 45, 46, 47, 48, 49, or 50+
+- **Desktop Environment**: GNOME Shell 45, 46, 47, 48, 49, 50, or 51+
 - **Display Server**: Wayland or X11
 - **Tools**:
   - `glib-compile-schemas` (included in `glib2` / `libglib2.0-bin`)
