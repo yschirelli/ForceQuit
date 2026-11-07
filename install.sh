@@ -194,6 +194,66 @@ else
 fi
 
 # ------------------------------------------------------------------------------
+# Target Directory Safety Validation (Fail-safe against accidental root deletion)
+# ------------------------------------------------------------------------------
+validate_target_dir() {
+    local dir="$1"
+
+    # 1. Reject empty or whitespace-only directory
+    if [ -z "${dir:-}" ] || [ -z "${dir// }" ]; then
+        log_error "CRITICAL SAFETY CHECK: Target directory is empty or unset!"
+        exit 1
+    fi
+
+    # 2. Reject root or top-level patterns
+    if [ "$dir" = "/" ] || [ "$dir" = "/*" ]; then
+        log_error "CRITICAL SAFETY CHECK: Refusing to operate on '/'! Aborting."
+        exit 1
+    fi
+
+    # 3. Resolve canonical path if possible
+    local canonical_dir
+    canonical_dir="$(realpath -m "$dir" 2>/dev/null || readlink -f "$dir" 2>/dev/null || echo "$dir")"
+
+    if [ "$canonical_dir" = "/" ]; then
+        log_error "CRITICAL SAFETY CHECK: Target directory resolves to root ('/')! Aborting."
+        exit 1
+    fi
+
+    # 4. Critical system paths blacklist
+    case "$canonical_dir" in
+        ""|"/"|"/bin"|"/boot"|"/dev"|"/etc"|"/home"|"/lib"|"/lib64"|"/media"|"/mnt"|"/opt"|"/proc"|"/root"|"/run"|"/sbin"|"/srv"|"/sys"|"/tmp"|"/usr"|"/usr/share"|"/var")
+            log_error "CRITICAL SAFETY CHECK: Target directory is a critical system path: $canonical_dir"
+            exit 1
+            ;;
+    esac
+
+    # 5. Strict structure check: Must contain gnome-shell/extensions and end with the extension UUID
+    if [ -z "${UUID:-}" ] || [[ "$canonical_dir" != */gnome-shell/extensions/"$UUID" ]]; then
+        log_error "CRITICAL SAFETY CHECK: Target directory must end with 'gnome-shell/extensions/${UUID:-<empty>}'!"
+        log_error "Attempted path: $canonical_dir"
+        exit 1
+    fi
+}
+
+# Fail-safe removal helper
+safe_remove_target_dir() {
+    validate_target_dir "$TARGET_DIR"
+
+    if [ -d "$TARGET_DIR" ]; then
+        if [ "$DRY_RUN" = false ]; then
+            # Protect against cross-device deletion using --one-file-system and --preserve-root
+            rm -rf --preserve-root --one-file-system "$TARGET_DIR" 2>/dev/null || rm -rf --preserve-root "$TARGET_DIR"
+        else
+            echo "  [dry-run] rm -rf $TARGET_DIR"
+        fi
+    fi
+}
+
+# Run validation immediately upon determining target directory
+validate_target_dir "$TARGET_DIR"
+
+# ------------------------------------------------------------------------------
 # Banner
 # ------------------------------------------------------------------------------
 printf "\n${C_BOLD}${C_MAGENTA}====================================================${C_RESET}\n"
@@ -218,11 +278,7 @@ if [ "$UNINSTALL_MODE" = true ]; then
 
     if [ -d "$TARGET_DIR" ]; then
         log_info "Removing directory: $TARGET_DIR"
-        if [ "$DRY_RUN" = false ]; then
-            rm -rf "$TARGET_DIR"
-        else
-            echo "  [dry-run] rm -rf $TARGET_DIR"
-        fi
+        safe_remove_target_dir
         log_success "${NAME} successfully uninstalled."
     else
         log_warn "Extension directory not found at $TARGET_DIR. Nothing to remove."
@@ -294,9 +350,7 @@ fi
 # Clean prior version to avoid orphaned files
 if [ -d "$TARGET_DIR" ]; then
     log_info "Updating existing installation..."
-    if [ "$DRY_RUN" = false ]; then
-        rm -rf "$TARGET_DIR"
-    fi
+    safe_remove_target_dir
 fi
 
 # Create target directory
